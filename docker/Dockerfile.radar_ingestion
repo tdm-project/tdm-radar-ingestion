@@ -1,6 +1,6 @@
 ARG APP_HOME=/radar-ingestion/
 
-FROM tdmproject/tdmq-client:latest
+FROM tdmproject/tdmq-client:dev-269
 
 LABEL maintainer="Massimo Gaggero <massimo dot gaggero at crs4 dot it>"
 
