@@ -57,6 +57,7 @@ echo -n "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-s
 for image in "${Images[@]}"; do
   ImageSlug="${ImageOwner}/${image}"
   FullImageName="${ImageSlug}:${tag}"
+  LatestImageName="${ImageSlug}:latest"
 
   log "Tagging image ${ImageSlug} as ${FullImageName}"
   # ImageSlug used here must match the image tag set by the
@@ -65,6 +66,15 @@ for image in "${Images[@]}"; do
 
   log "Pushing ${FullImageName} to dockerhub"
   docker push "${FullImageName}"
+
+  # The master branch provides the latest image
+  if  [[ "${TRAVIS_BRANCH}" = "master" ]]; then
+    log "Tagging image ${ImageSlug} as ${LatestImageName}"
+    docker tag "${ImageSlug}" "${LatestImageName}"
+
+    log "Pushing ${LatestImageName} to dockerhub"
+    docker push "${LatestImageName}"
+  fi
 done
 
 log "Finished"
