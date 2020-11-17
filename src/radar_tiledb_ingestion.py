@@ -294,9 +294,11 @@ def main():
     try:
         ts = source.timeseries()
         last_image_time = max(sorted(ts.time))
+        _last_slot = max(ts.tiledb_indices)
     except Exception as ex:  # FIXME too general
         ts = []
         last_image_time = datetime.datetime(1970, 1, 1, 0, 0, 0)
+        _last_slot = 0
 
     # Builds the list of file to download
     if args.sync:
@@ -319,14 +321,14 @@ def main():
     for _image in _images_to_ingest:
         _timestamp = datetime.datetime.strptime(
             _image, 'cag01est2400%Y-%m-%d_%H:%M:%S.png')
-        _slot = int(_timestamp.timestamp())
+        _last_slot = _last_slot + 1
 
         if args.dryrun:
-            logging.debug(f"[DRY-RUN] Ingesting data at time {_timestamp}, slot {_slot}.")
+            logging.debug(f"[DRY-RUN] Ingesting data at time {_timestamp}, slot {_last_slot}.")
         else:
-            logging.debug(f"Ingesting data at time {_timestamp}, slot {_slot}.")
+            logging.debug(f"Ingesting data at time {_timestamp}, slot {_last_slot}.")
             _data = fetch_radar_data(ssh_client, _image)
-            source.ingest(_timestamp, _data, _slot)
+            source.ingest(_timestamp, _data, _last_slot)
     logging.info(f"Done ingesting.")
 
 if __name__ == "__main__":
