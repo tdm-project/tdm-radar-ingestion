@@ -1,0 +1,24 @@
+ARG APP_HOME=/radar-ingestion/
+
+FROM tdmproject/tdmq-client:latest
+
+LABEL maintainer="Massimo Gaggero <massimo dot gaggero at crs4 dot it>"
+
+ARG APP_HOME
+
+ENV APP_HOME=${APP_HOME}
+
+WORKDIR ${APP_HOME}
+
+RUN pip3 install --no-cache-dir \
+    paramiko \
+    pillow \
+    requests
+
+COPY src/radar_tiledb_ingestion.py /usr/local/bin/
+
+# ENTRYPOINT []
+
+# CMD []
+
+# vim:ts=4:expandtab:filetype=dockerfile
