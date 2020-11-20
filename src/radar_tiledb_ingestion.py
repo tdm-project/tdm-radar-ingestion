@@ -204,6 +204,9 @@ def main():
     parser.add_argument('--tdmq-url', action='store', type=str, required=True,
                         dest='tdmq_url',
                         help=('tdmq server and path of the form'))
+    parser.add_argument('--tdmq-auth-token', action='store', type=str, required=True,
+                        dest='tdmq_auth_token',
+                        help=('tdmq server authorization token'))
     parser.add_argument('--ssh-url', action='store', type=str, required=True,
                         dest='ssh_url',
                         help=(
@@ -281,7 +284,7 @@ def main():
 
     # Instantiates a TDMQ client, retrieves the source if exists or registers a
     # new one
-    tdmq_client = Client(args.tdmq_url)
+    tdmq_client = Client(args.tdmq_url, args.tdmq_auth_token)
     sources = tdmq_client.find_sources({'id': _source_desc['id']})
     if len(sources) > 0:
         assert len(sources) == 1
