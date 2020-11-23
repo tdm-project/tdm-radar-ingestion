@@ -296,16 +296,17 @@ def main():
 
     try:
         ts = source.timeseries()
-        last_image_time = max(sorted(ts.time))
+        times = ts.time
+        last_image_time = max(sorted(times))
         _last_slot = max(ts.tiledb_indices)
     except Exception as ex:  # FIXME too general
-        ts = []
+        times = []
         last_image_time = datetime.datetime(1970, 1, 1, 0, 0, 0)
         _last_slot = 0
 
     # Builds the list of file to download
     if args.sync:
-        _images_to_ingest = ingest_missings(_image_list, ts.time)
+        _images_to_ingest = ingest_missings(_image_list, times)
     else:
         start_time = (
             datetime.datetime.now() - datetime.timedelta(hours=args.hours)
